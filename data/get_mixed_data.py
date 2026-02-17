@@ -11,7 +11,9 @@ TARGET_SNR = 10  # dB
 os.makedirs(OUT_DIR, exist_ok=True)
 
 speech_files = sorted(os.listdir(SPEECH_DIR))
+print(speech_files)
 noise_files = sorted(os.listdir(NOISE_DIR))
+print(noise_files)
 
 for i, speech_file in enumerate(speech_files):
     speech_path = os.path.join(SPEECH_DIR, speech_file)

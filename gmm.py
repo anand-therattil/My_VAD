@@ -74,7 +74,8 @@ class DiagonalGMM:
             self.vars += 1e-6
 
             # Compute log likelihood
-            log_likelihood = np.sum(np.log(prob_sum) + max_log.flatten())
+            # log_likelihood = np.sum(np.log(prob_sum) + max_log.flatten())
+            log_likelihood = np.sum(np.log(prob_sum) + max_log)
 
             print(f"Iteration {iteration+1}, Log Likelihood: {log_likelihood:.2f}")
 
@@ -82,3 +83,18 @@ class DiagonalGMM:
                 if abs(log_likelihood - prev_log_likelihood) < self.tol:
                     print("Converged!")
                     break
+    def score_samples(self, X):
+        """
+        Compute log probability log p(X)
+        """
+
+        log_prob = self._gaussian_log_prob(X)
+        log_prob += np.log(self.weights + 1e-10)
+
+        # log-sum-exp trick
+        max_log = np.max(log_prob, axis=1, keepdims=True)
+        log_prob -= max_log
+        prob = np.exp(log_prob)
+        prob_sum = np.sum(prob, axis=1, keepdims=True)
+
+        return (np.log(prob_sum) + max_log).flatten()
